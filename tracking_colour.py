@@ -25,12 +25,16 @@ pts = deque(maxlen=args["buffer"])
 
 def track():
 
-    object_set_to_be_detected = False
+    object_set_to_be_detected = 0
+
+    vector = np.zeros((2, 1), dtype=np.int)
 
     camera = cv2.VideoCapture(0)
 
     (grabbed, frame) = camera.read()
     frame = np.transpose(frame, (1, 0, 2))
+
+    direction = ""
 
     pygame.init()
     gameDisplay = pygame.display.set_mode(frame.shape[:2])
@@ -54,6 +58,7 @@ def track():
                 # print "Mouse", pos
 
                 img = frame
+                # TODO : Compare the results with frame.copy()
 
                 # print path, img
 
@@ -77,13 +82,20 @@ def track():
 
                 result = [(min_h, min_s, min_v), (max_h, max_s, max_v)]
 
-                object_set_to_be_detected = True
+                object_set_to_be_detected = 1
 
                 img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
+                # TODO : This won't be required if frame.copy() gave good results
 
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-                # print colourUpper, colourLower
-                sys.exit(0)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    # print colourUpper, colourLower
+                    sys.exit(0)
+
+                elif event.key == pygame.K_s:
+                    # print "Key pressed"
+                    pts.clear()
+                    object_set_to_be_detected = 1 - object_set_to_be_detected
 
             else:
                 pass
@@ -104,7 +116,7 @@ def track():
         position_mouse = pygame.mouse.get_pos()
         pygame.draw.rect(gameDisplay, (0, 0, 0), (position_mouse[0] - crop_img_offset, position_mouse[1] - crop_img_offset, 2 * crop_img_offset, 2 * crop_img_offset), 2)
 
-        if object_set_to_be_detected :
+        if object_set_to_be_detected:
             colourLower = np.array([result[0][0], result[0][1], result[0][2]], dtype="uint8")
             colourUpper = np.array([result[1][0], result[1][1], result[1][2]], dtype="uint8")
 
@@ -132,35 +144,73 @@ def track():
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 pts.appendleft(center)
 
+                if len(pts) > 1:
+                    center = np.array(center)
+                    center = center.reshape((2, 1))
+                    last_element = np.array(pts[1]).reshape((2, 1))
+                    vector += (center - last_element)
+                    # print vector
+
             for i in xrange(1, len(pts)):
                 if pts[i - 1] is None or pts[i] is None:
                     continue
 
-                if len(pts) > 10 and i == 1 and pts[-10] is not None:
-                    dX = pts[-10][0] - pts[i][0]
-                    dY = pts[-10][1] - pts[i][1]
-                    (dirX, dirY) = ("", "")
-
-
-                    if np.abs(dX) > 15:
-                        dirX = "East" if np.sign(dX) == 1 else "West"
-                    if np.abs(dY) > 15:
-                        dirY = "North" if np.sign(dY) == 1 else "South"
-
-                    if dirX != "" and dirY != "":
-                        direction = "{}-{}".format(dirY, dirX)
-                    else:
-                        direction = dirX if dirX != "" else dirY
-
-                    font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
-                    screen_text = font.render(direction, True, (0, 0, 0))
-                    text_position = screen_text.get_rect()
-                    text_position.center = (100, 100)
-                    gameDisplay.blit(screen_text, text_position)
+                # if len(pts) > 8 and i == 1 and pts[-8] is not None:
+                #     dX = pts[-8][0] - pts[i][0]
+                #     dY = pts[-8][1] - pts[i][1]
+                #     (dirX, dirY) = ("", "")
+                #
+                #
+                #     if np.abs(dX) > 10:
+                #         dirX = "East" if np.sign(dX) == 1 else "West"
+                #     if np.abs(dY) > 10:
+                #         dirY = "North" if np.sign(dY) == 1 else "South"
+                #
+                #     if dirX == "":
+                #         direction = dirY
+                #     elif dirY == "":
+                #         direction = dirX
+                #     else:
+                #         direction = dirX if abs(dY)/abs(dX) >= 1 else dirY
+                #
+                #     font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
+                #     screen_text = font.render(direction, True, (0, 0, 0))
+                #     text_position = screen_text.get_rect()
+                #     text_position.center = (100, 100)
+                #     gameDisplay.blit(screen_text, text_position)
 
                 thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 3)
                 # cv2.line(frame, pts[i - 1], pts[i], (0, 255, 0), thickness)
                 pygame.draw.line(gameDisplay, (0, 255, 0), pts[i - 1], pts[i], thickness)
+
+            if np.linalg.norm(vector) > 200:
+                # print "Direction", vector
+                # print np.linalg.norm(vector)
+                dX = vector[0]
+                dY = vector[1]
+
+                (dirX, dirY) = ("", "")
+
+                if np.abs(dX) > 150:
+                    dirX = "West" if np.sign(dX) == 1 else "East"
+                if np.abs(dY) > 150:
+                    dirY = "South" if np.sign(dY) == 1 else "North"
+
+                if dirX == "":
+                    direction = dirY
+                elif dirY == "":
+                    direction = dirX
+                else:
+                    direction = dirX if abs(dY)/abs(dX) >= 1 else dirY
+
+                vector = np.zeros((2, 1), dtype=np.int)
+                # print direction
+
+            font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
+            screen_text = font.render(direction, True, (0, 0, 0))
+            text_position = screen_text.get_rect()
+            text_position.center = (100, 100)
+            gameDisplay.blit(screen_text, text_position)
 
         pygame.display.update()
 
