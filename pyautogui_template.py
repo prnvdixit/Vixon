@@ -54,6 +54,62 @@ def presentation_control(action=None):
 
     pyautogui.click(x=1000, y=500)
 
+def key_press(key):
+
+    print temp.prev_key
+
+    action = key.lower()
+
+    spec_keys = ['ctrl', 'shift']
+
+    if action not in spec_keys and temp.prev_key not in spec_keys :
+        pos = pyautogui.position()
+        pyautogui.click(x=1000, y=500)
+        pyautogui.press(action)
+        pyautogui.moveTo(x=pos[0], y=pos[1])
+    else:
+        if temp.prev_key != "":
+            print temp.prev_key, action
+            pos = pyautogui.position()
+            pyautogui.click(x=1000, y=500)
+            pyautogui.hotkey(temp.prev_key, action)
+            temp.prev_key = ""
+            pyautogui.moveTo(x=pos[0], y=pos[1])
+
+        else:
+            print temp.prev_key, action
+            temp.prev_key = action
+
+keys = [
+    ';','`','!','@','#','"','&','*','(',')', '+', '-','_', 'Ctrl', 'Enter',
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p','\\','7','8','9','BackSpace',
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l','{','}','4','5','6','Shift',
+    'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.','?','/','1','2','3','Space',
+]
+
+
+virtual_keyboard.title("Keyboard")
+virtual_keyboard.resizable(0,0)
+
+row_num = 1
+col_num = 0
+
+for key in keys:
+
+    command = lambda x=key : key_press(x)
+
+    tk.Button(virtual_keyboard, text=key, width=7, command=command).grid(row=row_num, column=col_num)
+
+    col_num += 1
+
+    if col_num > 14:
+        row_num += 1
+        col_num = 0
+
+
+entry = tk.Entry(virtual_keyboard, width=180)
+virtual_keyboard.mainloop()
+
 # media_controls(action=None)
 # reading_controls(action=None)
 # presentation_control(action=None)
