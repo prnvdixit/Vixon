@@ -56,27 +56,32 @@ def presentation_control(action=None):
 
 def key_press(key):
 
-    print temp.prev_key
+    # print pyautogui.position()
 
     action = key.lower()
 
     spec_keys = ['ctrl', 'shift']
 
     if action not in spec_keys and temp.prev_key not in spec_keys :
-        pos = pyautogui.position()
-        pyautogui.click(x=1000, y=500)
+        print action
+        # pos = pyautogui.position()
+        # pyautogui.click(x=1000, y=500)
         pyautogui.press(action)
-        pyautogui.moveTo(x=pos[0], y=pos[1])
+        # pyautogui.moveTo(x=pos[0], y=pos[1])
     else:
         if temp.prev_key != "":
             print temp.prev_key, action
-            pos = pyautogui.position()
-            pyautogui.click(x=1000, y=500)
+            # pos = pyautogui.position()
+            # pyautogui.click(x=1000, y=500)
             pyautogui.hotkey(temp.prev_key, action)
             temp.prev_key = ""
-            pyautogui.moveTo(x=pos[0], y=pos[1])
+            # pyautogui.moveTo(x=pos[0], y=pos[1])
 
         else:
+
+            # To check the dimensions of each key
+            # pyautogui.moveTo(x=65, y=163)
+            # pyautogui.click()
             print temp.prev_key, action
             temp.prev_key = action
 
@@ -98,7 +103,7 @@ for key in keys:
 
     command = lambda x=key : key_press(x)
 
-    tk.Button(virtual_keyboard, text=key, width=7, command=command).grid(row=row_num, column=col_num)
+    tk.Button(virtual_keyboard, text=key, command=command).grid(row=row_num, column=col_num);
 
     col_num += 1
 
@@ -106,8 +111,10 @@ for key in keys:
         row_num += 1
         col_num = 0
 
+entry = tk.Entry(virtual_keyboard, width=60)
 
-entry = tk.Entry(virtual_keyboard, width=180)
+virtual_keyboard.call('wm', 'attributes', '.', '-topmost', True)
+
 virtual_keyboard.mainloop()
 
 # media_controls(action=None)
