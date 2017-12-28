@@ -41,36 +41,36 @@ def presentation_controls(action=None):
     if action == "move_back":
         pyautogui.press('left')
 
-# def key_press(key):
-#
-#     # print pyautogui.position()
-#
-#     action = key.lower()
-#
-#     spec_keys = ['ctrl', 'shift']
-#
-#     if action not in spec_keys and temp.prev_key not in spec_keys :
-#         print action
-#         # pos = pyautogui.position()
-#         # pyautogui.click(x=1000, y=500)
-#         pyautogui.press(action)
-#         # pyautogui.moveTo(x=pos[0], y=pos[1])
-#     else:
-#         if temp.prev_key != "":
-#             print temp.prev_key, action
-#             # pos = pyautogui.position()
-#             # pyautogui.click(x=1000, y=500)
-#             pyautogui.hotkey(temp.prev_key, action)
-#             temp.prev_key = ""
-#             # pyautogui.moveTo(x=pos[0], y=pos[1])
-#
-#         else:
-#
-#             # To check the dimensions of each key
-#             # pyautogui.moveTo(x=65, y=163)
-#             # pyautogui.click()
-#             print temp.prev_key, action
-#             temp.prev_key = action
+def key_press(key):
+
+    # print pyautogui.position()
+
+    action = key.lower()
+
+    spec_keys = ['ctrl', 'shift']
+
+    if action not in spec_keys and temp.prev_key not in spec_keys :
+        print action
+        # pos = pyautogui.position()
+        # pyautogui.click(x=1000, y=500)
+        pyautogui.press(action)
+        # pyautogui.moveTo(x=pos[0], y=pos[1])
+    else:
+        if temp.prev_key != "":
+            print temp.prev_key, action
+            # pos = pyautogui.position()
+            # pyautogui.click(x=1000, y=500)
+            pyautogui.hotkey(temp.prev_key, action)
+            temp.prev_key = ""
+            # pyautogui.moveTo(x=pos[0], y=pos[1])
+
+        else:
+
+            # To check the dimensions of each key
+            # pyautogui.moveTo(x=65, y=163)
+            # pyautogui.click()
+            print temp.prev_key, action
+            temp.prev_key = action
 
 # keys = [
 #     ';','`','!','@','#','"','&','*','(',')', '+', '-','_', u"\u2303", u"\u23CE",

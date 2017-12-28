@@ -5,10 +5,15 @@ import cv2
 import pygame
 import sys
 import imutils
-import temp
 import pyautogui
+import os
+from collections import Counter
 
+import new_temp
+import temp
 import pyautogui_template
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = '{0},{1}'.format(0, 0)
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-b", "--buffer", type=int, default=32, help="max buffer size")
@@ -54,15 +59,13 @@ def track():
     pygame.mouse.set_visible(False)
 
     result = []
+    key_buffer = []
 
     while grabbed:
         # print pyautogui.position()
         (grabbed, frame) = camera.read()
 
         frame = cv2.flip(frame, 1)
-
-        if temp.mode == "virtual_keyboard":
-            pygame.mouse.set_visible(True)
 
         # cv2.imwrite("flag.jpg", frame)
 
@@ -304,10 +307,30 @@ def track():
                 x, y, w, h = cv2.boundingRect(c)
 
                 center = (x + w / 2, y + h / 2)
-                pygame.draw.rect(game_display, (0, 255, 0), (x, y, w, h), 2)
-                pygame.draw.rect(game_display, (0, 0, 0), (center[0], center[1], 10, 10))
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 pts.appendleft(center)
+
+                if temp.mode == "virtual_keyboard":
+                    pygame.draw.circle(game_display, (0, 120, 255), center, 10, 5)
+                    pygame.draw.line(game_display, (0, 0, 0), (center[0]-50,center[1]), (center[0]+50,center[1]), 1)
+                    pygame.draw.line(game_display, (0, 0, 0), (center[0],center[1]-50), (center[0],center[1]+50), 1)
+
+                    key_buffer.append(new_temp.get_key(center))
+
+                    max_occuring = Counter(key_buffer[-20:]).most_common(1)
+                    print key_buffer, max_occuring
+
+                    if len(key_buffer) > 20:
+                        key_buffer = key_buffer[-20:]
+
+                    if max_occuring != [] and max_occuring[0][1] > 15 and max_occuring[0][0] is not None:
+                        pyautogui_template.key_press(max_occuring[0][0])
+                        pygame.draw.circle(game_display, (0, 0,0), center, 15, 10)
+                        key_buffer = []
+
+                else:
+                    pygame.draw.rect(game_display, (0, 255, 0), (x, y, w, h), 2)
+                    pygame.draw.rect(game_display, (0, 0, 0), (center[0], center[1], 10, 10))
 
                 if len(pts) > 1:
                     center = np.array(center)
