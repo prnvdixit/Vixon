@@ -5,7 +5,9 @@ def get_key(column, row):
     print column, row
     key = keys[15 * row + column]
 
-    pyautogui_template.key_press(key)
+    return key
+
+    # pyautogui_template.key_press(key)
 
 keys = [
     ';','`','!','@','#','"','&','*','(',')', '+', '-','_', 'Ctrl', 'Enter',
@@ -18,10 +20,10 @@ while True:
     pos = pyautogui.position()
     print pos
 
-    column = (pos[0] - 65) / 84
-    row = (pos[1] - 52) / 28
+    column = (pos[0] - 65) / 44
+    row = (pos[1] - 420) / 27
 
     if column > 14 or row > 3:
         pass
     else:
-        get_key(column, row)
+        print get_key(column, row)

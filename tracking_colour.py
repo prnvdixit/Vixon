@@ -6,7 +6,6 @@ import pygame
 import sys
 import imutils
 import temp
-import time
 import pyautogui
 
 import pyautogui_template
@@ -22,6 +21,10 @@ pts = deque(maxlen=args["buffer"])
 keyboard_img = pygame.image.load("keyboard.png")
 
 
+# def press_keyboard():
+    # print pyautogui.position()
+
+
 #
 # gameDisplay = pygame.display.set_mode((640, 480))
 # pygame.display.set_caption('hsv_approximation')
@@ -33,7 +36,6 @@ keyboard_img = pygame.image.load("keyboard.png")
 
 def track():
 
-    elapsed_time = 0
     object_set_to_be_detected = 0
     prevent_object_set_to_be_detected = 0
 
@@ -54,7 +56,7 @@ def track():
     result = []
 
     while grabbed:
-        print pyautogui.position()
+        # print pyautogui.position()
         (grabbed, frame) = camera.read()
 
         frame = cv2.flip(frame, 1)
@@ -137,6 +139,7 @@ def track():
                     img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
 
                     prevent_object_set_to_be_detected = 1
+            # print result
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
@@ -161,9 +164,6 @@ def track():
                 elif event.key == pygame.K_r:
                     temp.mode = "reading"
 
-            else:
-                pass
-
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # gameDisplay.blit(frame, (0, 0))
         # print "1", frame.shape
@@ -184,6 +184,15 @@ def track():
             game_display.blit(keyboard_img, (0, frame.shape[0] - keyboard_img.get_rect().size[1]))
             # game_display.blit(keyboard_img, (0, 0))
 
+        else:
+            position_mouse = pygame.mouse.get_pos()
+            pygame.draw.rect(
+                game_display, (0, 0, 0), (position_mouse[0] - crop_img_offset,
+                    position_mouse[1] - crop_img_offset,
+                    2 * crop_img_offset,
+                    2 * crop_img_offset), 2
+            )
+
 
         if temp.mode == "reading":
             if direction == "West":
@@ -202,8 +211,8 @@ def track():
                 direction = ""
                 action = None
 
-        if temp.mode == "presentation":
-            print direction
+        elif temp.mode == "presentation":
+            # print direction
             if direction == "West":
                 action = "move_forward"
             elif direction == "East":
@@ -220,8 +229,8 @@ def track():
                 direction = ""
                 action = None
 
-        if temp.mode == "media":
-            print direction
+        elif temp.mode == "media":
+            # print direction
             if direction == "West":
                 action = "move_forward"
             elif direction == "East":
@@ -238,16 +247,6 @@ def track():
                 direction = ""
                 action = None
 
-
-        if temp.mode != "virtual_keyboard":
-            position_mouse = pygame.mouse.get_pos()
-            pygame.draw.rect(
-                game_display, (0, 0, 0), (position_mouse[0] - crop_img_offset,
-                    position_mouse[1] - crop_img_offset,
-                    2 * crop_img_offset,
-                    2 * crop_img_offset), 2
-            )
-
         if prevent_object_set_to_be_detected:
             colour_lower_prevent = np.array([result_prevent[0][0], result_prevent[0][1], result_prevent[0][2]], dtype="uint8")
             colour_upper_prevent = np.array([result_prevent[1][0], result_prevent[1][1], result_prevent[1][2]], dtype="uint8")
@@ -260,6 +259,13 @@ def track():
             mask = cv2.inRange(hsv, colour_lower_prevent, colour_upper_prevent)
             mask = cv2.erode(mask, None, iterations=2)
             mask = cv2.dilate(mask, None, iterations=2)
+
+
+            # blur = cv2.medianBlur(mask, 15)
+            # blur = cv2.GaussianBlur(blur, (5, 5), 0)
+            # thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+            # contours = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[1]
+
 
             cv2.imshow("Mask", mask)
 
@@ -299,7 +305,7 @@ def track():
 
                 center = (x + w / 2, y + h / 2)
                 pygame.draw.rect(game_display, (0, 255, 0), (x, y, w, h), 2)
-                pygame.draw.rect(game_display, (255, 255, 255), (center[0], center[1], 10, 10))
+                pygame.draw.rect(game_display, (0, 0, 0), (center[0], center[1], 10, 10))
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 pts.appendleft(center)
 
@@ -309,9 +315,6 @@ def track():
                     last_element = np.array(pts[1]).reshape((2, 1))
                     vector += (center - last_element)
                     # print vector
-
-                if temp.mode == "virtual_keyboard":
-                    pyautogui.moveTo((center[0] + mouse_offset[0]), center[1] + mouse_offset[1])
 
             for i in xrange(1, len(pts)):
                 if pts[i - 1] is None or pts[i] is None:
@@ -341,7 +344,7 @@ def track():
                 #     text_position.center = (100, 100)
                 #     gameDisplay.blit(screen_text, text_position)
 
-                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 3)
+                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 1.5)
                 # cv2.line(frame, pts[i - 1], pts[i], (0, 255, 0), thickness)
                 pygame.draw.line(game_display, (0, 255, 0), pts[i - 1], pts[i], thickness)
 
@@ -369,7 +372,7 @@ def track():
                 # print direction
 
             font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
-            screen_text = font.render(direction, True, (255, 255, 255))
+            screen_text = font.render(direction, True, (0, 0, 255))
             text_position = screen_text.get_rect()
             text_position.center = (350, 450)
             game_display.blit(screen_text, text_position)
