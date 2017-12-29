@@ -6,6 +6,7 @@ import pygame
 import sys
 import imutils
 # import pyautogui
+import requests
 import os
 from collections import Counter
 
@@ -47,20 +48,45 @@ def track():
     camera = cv2.VideoCapture(0)
 
     (grabbed, frame) = camera.read()
+
+    ## ** IP-webcam part ** ##
+    # url = "http://192.168.43.1:8080/shot.jpg"
+    # img_resp = requests.get(url)
+    # img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
+    # frame = cv2.imdecode(img_arr, -1)
+    ##       **             ##
+
     frame = np.transpose(frame, (1, 0, 2))
+    # print frame.shape
 
     direction = ""
 
     pygame.init()
     game_display = pygame.display.set_mode(frame.shape[:2])
+
+    ## ** IP-webcam part ** ##
+    # game_display = pygame.display.set_mode(frame.shape[:2][::-1])
+    ##         **             ##
+
     pygame.display.set_caption('hsv_approximation')
     pygame.mouse.set_visible(False)
 
     result = []
     key_buffer = []
 
-    while grabbed:
+    while True:
         (grabbed, frame) = camera.read()
+
+        # print frame.shape
+
+        ## ** IP-webcam part ** ##
+        # url = "http://192.168.43.1:8080/shot.jpg"
+        # img_resp = requests.get(url)
+        # img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
+        # frame = cv2.imdecode(img_arr, -1)
+        # frame = np.transpose(frame, (1, 0, 2))
+        ##       **             ##
+
 
         frame = cv2.flip(frame, 1)
 
@@ -334,30 +360,6 @@ def track():
             for i in xrange(1, len(pts)):
                 if pts[i - 1] is None or pts[i] is None:
                     continue
-
-                # if len(pts) > 8 and i == 1 and pts[-8] is not None:
-                #     d_x = pts[-8][0] - pts[i][0]
-                #     d_y = pts[-8][1] - pts[i][1]
-                #     (dir_x, dir_y) = ("", "")
-                #
-                #
-                #     if np.abs(d_x) > 10:
-                #         dir_x = "East" if np.sign(d_x) == 1 else "West"
-                #     if np.abs(d_y) > 10:
-                #         dir_y = "North" if np.sign(d_y) == 1 else "South"
-                #
-                #     if dir_x == "":
-                #         direction = dir_y
-                #     elif dir_y == "":
-                #         direction = dir_x
-                #     else:
-                #         direction = dir_x if abs(d_y)/abs(d_x) >= 1 else dir_y
-                #
-                #     font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
-                #     screen_text = font.render(direction, True, (0, 0, 0))
-                #     text_position = screen_text.get_rect()
-                #     text_position.center = (100, 100)
-                #     gameDisplay.blit(screen_text, text_position)
 
                 thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 1.5)
                 # cv2.line(frame, pts[i - 1], pts[i], (0, 255, 0), thickness)
