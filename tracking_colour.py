@@ -5,7 +5,7 @@ import cv2
 import pygame
 import sys
 import imutils
-import pyautogui
+# import pyautogui
 import os
 from collections import Counter
 
@@ -23,13 +23,11 @@ crop_img_offset = 15
 
 pts = deque(maxlen=args["buffer"])
 
-keyboard_img = pygame.image.load("keyboard.png")
+keyboard_img = pygame.image.load("keyboard_.png")
 
 
 # def press_keyboard():
     # print pyautogui.position()
-
-
 #
 # gameDisplay = pygame.display.set_mode((640, 480))
 # pygame.display.set_caption('hsv_approximation')
@@ -62,13 +60,12 @@ def track():
     key_buffer = []
 
     while grabbed:
-        # print pyautogui.position()
         (grabbed, frame) = camera.read()
 
         frame = cv2.flip(frame, 1)
 
+        # print pyautogui.position()
         # cv2.imwrite("flag.jpg", frame)
-
         # frame_image = pygame.image.load("flag.jpg")
         # gameDisplay.blit(frame_image, (0, 0))
 
@@ -80,9 +77,9 @@ def track():
                     x_co = pos[0]
                     y_co = pos[1]
                     # print "Mouse", pos
+                    # print path, img
 
                     img = frame
-                    # print path, img
 
                     img_crop = img[y_co - crop_img_offset:y_co + crop_img_offset,
                                x_co - crop_img_offset:x_co + crop_img_offset]
@@ -114,9 +111,9 @@ def track():
                     x_co = pos[0]
                     y_co = pos[1]
                     # print "Mouse", pos
+                    # print path, img
 
                     img = frame
-                    # print path, img
 
                     img_crop = img[y_co - crop_img_offset:y_co + crop_img_offset,
                                x_co - crop_img_offset:x_co + crop_img_offset]
@@ -142,7 +139,6 @@ def track():
                     img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
 
                     prevent_object_set_to_be_detected = 1
-            # print result
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
@@ -154,6 +150,7 @@ def track():
                     pts.clear()
                     object_set_to_be_detected = 1 - object_set_to_be_detected
                     direction = ""
+                    temp.mode = ""
 
                 elif event.key == pygame.K_k:
                     temp.mode = "virtual_keyboard"
@@ -175,9 +172,8 @@ def track():
         # print frame.shape
         # pygame.pixelcopy.array_to_surface(gameDisplay, frame)
         pygame.surfarray.blit_array(game_display, frame)
-        # print "3", frame.shape
         frame = np.transpose(frame, (1, 0, 2))
-        # print "4", frame.shape
+        # print "3", frame.shape
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         if temp.mode == "virtual_keyboard":
@@ -185,16 +181,12 @@ def track():
             # print "Frame", frame.shape[0], "Keyboard", keyboard_img.get_rect().size[1]
             # OpenCV's frame is of the numpy-form (y, x); But PyGame's loaded image is as (x, y)
             game_display.blit(keyboard_img, (0, frame.shape[0] - keyboard_img.get_rect().size[1]))
+            pygame.mouse.set_visible(True)
             # game_display.blit(keyboard_img, (0, 0))
 
         else:
             position_mouse = pygame.mouse.get_pos()
-            pygame.draw.rect(
-                game_display, (0, 0, 0), (position_mouse[0] - crop_img_offset,
-                    position_mouse[1] - crop_img_offset,
-                    2 * crop_img_offset,
-                    2 * crop_img_offset), 2
-            )
+            pygame.draw.rect(game_display, (0, 0, 0), (position_mouse[0] - crop_img_offset,position_mouse[1] - crop_img_offset, 2 * crop_img_offset, 2 * crop_img_offset), 2)
 
 
         if temp.mode == "reading":
@@ -318,7 +310,7 @@ def track():
                     key_buffer.append(new_temp.get_key(center))
 
                     max_occuring = Counter(key_buffer[-20:]).most_common(1)
-                    print key_buffer, max_occuring
+                    # print key_buffer, max_occuring
 
                     if len(key_buffer) > 20:
                         key_buffer = key_buffer[-20:]
@@ -393,6 +385,7 @@ def track():
 
                 vector = np.zeros((2, 1), dtype=np.int)
                 # print direction
+
 
             font = pygame.font.SysFont("timesnewroman", size=25, bold="False", italic="True")
             screen_text = font.render(direction, True, (0, 0, 255))
