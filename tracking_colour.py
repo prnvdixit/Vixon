@@ -24,7 +24,7 @@ crop_img_offset = 15
 
 pts = deque(maxlen=args["buffer"])
 
-keyboard_img = pygame.image.load("keyboard_.png")
+keyboard_img = pygame.image.load("keyboard.png")
 
 
 # def press_keyboard():
