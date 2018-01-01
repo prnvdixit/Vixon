@@ -1,6 +1,6 @@
 import pyautogui
 import Tkinter as tk
-import temp
+import constants
 
 virtual_keyboard = tk.Tk()
 
@@ -9,7 +9,6 @@ virtual_keyboard = tk.Tk()
 # print pyautogui.prompt('This lets the user type in a string and press OK.')
 
 def media_controls(action=None):
-
     if action == "move_forward":
         pyautogui.hotkey('ctrl', 'right')
     if action == "move_back":
@@ -20,7 +19,6 @@ def media_controls(action=None):
         pyautogui.hotkey('ctrl', 'down')
 
 def reading_controls(action=None):
-
     if action == "page_down":
         pyautogui.press('pgdn')
     if action == "page_up":
@@ -49,19 +47,19 @@ def key_press(key):
 
     spec_keys = ['ctrl', 'shift']
 
-    if action not in spec_keys and temp.prev_key not in spec_keys :
+    if action not in spec_keys and constants.prev_key not in spec_keys :
         print action
         # pos = pyautogui.position()
         # pyautogui.click(x=1000, y=500)
         pyautogui.press(action)
         # pyautogui.moveTo(x=pos[0], y=pos[1])
     else:
-        if temp.prev_key != "":
-            print temp.prev_key, action
+        if constants.prev_key != "":
+            print constants.prev_key, action
             # pos = pyautogui.position()
             # pyautogui.click(x=1000, y=500)
-            pyautogui.hotkey(temp.prev_key, action)
-            temp.prev_key = ""
+            pyautogui.hotkey(constants.prev_key, action)
+            constants.prev_key = ""
             # pyautogui.moveTo(x=pos[0], y=pos[1])
 
         else:
@@ -69,8 +67,8 @@ def key_press(key):
             # To check the dimensions of each key
             # pyautogui.moveTo(x=65, y=163)
             # pyautogui.click()
-            print temp.prev_key, action
-            temp.prev_key = action
+            print constants.prev_key, action
+            constants.prev_key = action
 
 # keys = [
 #     ';','`','!','@','#','"','&','*','(',')', '+', '-','_', u"\u2303", u"\u23CE",
@@ -110,7 +108,7 @@ def key_press(key):
 # virtual_keyboard.call('wm', 'attributes', '.', '-topmost', True)
 #
 # virtual_keyboard.mainloop()
-
-# media_controls(action=None)
-# reading_controls(action="page_down")
-# presentation_control(action=None)
+#
+# # media_controls(action=None)
+# # reading_controls(action="page_down")
+# # presentation_control(action=None)

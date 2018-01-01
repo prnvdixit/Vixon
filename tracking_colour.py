@@ -6,12 +6,12 @@ import pygame
 import sys
 import imutils
 # import pyautogui
-import requests
+# import requests
 import os
 from collections import Counter
 
-import new_temp
-import temp
+import keyboard_helper
+import constants
 import pyautogui_template
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = '{0},{1}'.format(0, 0)
@@ -20,7 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-b", "--buffer", type=int, default=32, help="max buffer size")
 args = vars(ap.parse_args())
 
-crop_img_offset = 15
+crop_img_offset = 20
 
 pts = deque(maxlen=args["buffer"])
 
@@ -176,19 +176,19 @@ def track():
                     pts.clear()
                     object_set_to_be_detected = 1 - object_set_to_be_detected
                     direction = ""
-                    temp.mode = ""
+                    constants.mode = ""
 
                 elif event.key == pygame.K_k:
-                    temp.mode = "virtual_keyboard"
+                    constants.mode = "virtual_keyboard"
 
                 elif event.key == pygame.K_p:
-                    temp.mode = "presentation"
+                    constants.mode = "presentation"
 
                 elif event.key == pygame.K_m:
-                    temp.mode = "media"
+                    constants.mode = "media"
 
                 elif event.key == pygame.K_r:
-                    temp.mode = "reading"
+                    constants.mode = "reading"
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # gameDisplay.blit(frame, (0, 0))
@@ -202,7 +202,7 @@ def track():
         # print "3", frame.shape
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-        if temp.mode == "virtual_keyboard":
+        if constants.mode == "virtual_keyboard":
             # print keyboard_img.get_rect().size
             # print "Frame", frame.shape[0], "Keyboard", keyboard_img.get_rect().size[1]
             # OpenCV's frame is of the numpy-form (y, x); But PyGame's loaded image is as (x, y)
@@ -215,7 +215,7 @@ def track():
             pygame.draw.rect(game_display, (0, 0, 0), (position_mouse[0] - crop_img_offset,position_mouse[1] - crop_img_offset, 2 * crop_img_offset, 2 * crop_img_offset), 2)
 
 
-        if temp.mode == "reading":
+        if constants.mode == "reading":
             if direction == "West":
                 action = "page_down"
             elif direction == "East":
@@ -227,12 +227,12 @@ def track():
             else:
                 action = None
             if action != None:
-                pyautogui_template.reading_controls(action)
+                pyautogui_constantslate.reading_controls(action)
                 pts.clear()
                 direction = ""
                 action = None
 
-        elif temp.mode == "presentation":
+        elif constants.mode == "presentation":
             # print direction
             if direction == "West":
                 action = "move_forward"
@@ -250,7 +250,7 @@ def track():
                 direction = ""
                 action = None
 
-        elif temp.mode == "media":
+        elif constants.mode == "media":
             # print direction
             if direction == "West":
                 action = "move_forward"
@@ -281,13 +281,6 @@ def track():
             mask = cv2.erode(mask, None, iterations=2)
             mask = cv2.dilate(mask, None, iterations=2)
 
-
-            # blur = cv2.medianBlur(mask, 15)
-            # blur = cv2.GaussianBlur(blur, (5, 5), 0)
-            # thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-            # contours = cv2.findContours(thresh.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[1]
-
-
             cv2.imshow("Mask", mask)
 
             contours = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -306,7 +299,7 @@ def track():
             colour_upper = np.array([result[1][0], result[1][1], result[1][2]], dtype="uint8")
 
             frame = imutils.resize(frame, width=640)
-            blur_frame = cv2.GaussianBlur(frame, (11, 11), 0)
+            blur_frame = cv2.GaussianBlur(frame, (15, 15), 0)
             hsv = cv2.cvtColor(blur_frame, cv2.COLOR_BGR2HSV)
 
             # print colour_lower, colour_upper
@@ -328,12 +321,12 @@ def track():
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 pts.appendleft(center)
 
-                if temp.mode == "virtual_keyboard":
+                if constants.mode == "virtual_keyboard":
                     pygame.draw.circle(game_display, (0, 120, 255), center, 10, 5)
                     pygame.draw.line(game_display, (0, 0, 0), (center[0]-50,center[1]), (center[0]+50,center[1]), 1)
                     pygame.draw.line(game_display, (0, 0, 0), (center[0],center[1]-50), (center[0],center[1]+50), 1)
 
-                    key_buffer.append(new_temp.get_key(center))
+                    key_buffer.append(keyboard_helper.get_key(center))
 
                     max_occuring = Counter(key_buffer[-20:]).most_common(1)
                     # print key_buffer, max_occuring
@@ -404,4 +397,3 @@ def track():
             break
 
 track()
-

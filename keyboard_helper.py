@@ -1,11 +1,10 @@
-import pyautogui
-import temp
+import constants
 import numpy as np
 
 def get_key(pos):
     # print column, row
 
-    pos = np.array(pos) + np.array(temp.window_offset)
+    pos = np.array(pos) + np.array(constants.window_offset)
 
     column = (pos[0] - 65) / 44
     row = (pos[1] - 420) / 27
@@ -24,4 +23,3 @@ keys_mapping = [
     'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l','{','}','4','5','6', 'Shift',
     'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.','?','/','1','2','3', 'Space',
 ]
-
