@@ -227,7 +227,7 @@ def track():
             else:
                 action = None
             if action != None:
-                pyautogui_constantslate.reading_controls(action)
+                pyautogui_template.reading_controls(action)
                 pts.clear()
                 direction = ""
                 action = None
@@ -328,13 +328,13 @@ def track():
 
                     key_buffer.append(keyboard_helper.get_key(center))
 
-                    max_occuring = Counter(key_buffer[-20:]).most_common(1)
+                    max_occuring = Counter(key_buffer[-10:]).most_common(1)
                     # print key_buffer, max_occuring
 
-                    if len(key_buffer) > 20:
-                        key_buffer = key_buffer[-20:]
+                    if len(key_buffer) > 10:
+                        key_buffer = key_buffer[-10:]
 
-                    if max_occuring != [] and max_occuring[0][1] > 15 and max_occuring[0][0] is not None:
+                    if max_occuring != [] and max_occuring[0][1] > 8 and max_occuring[0][0] is not None:
                         pyautogui_template.key_press(max_occuring[0][0])
                         pygame.draw.circle(game_display, (0, 0,0), center, 15, 10)
                         key_buffer = []
