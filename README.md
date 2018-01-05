@@ -24,6 +24,17 @@ If the above link is not working for some reason, [Click here](https://youtu.be/
 * To stop detection, you can just press 's' after keeping openCV window in focus. If you wish to automate the same, just set the detection-inhibitor HSV range (by right clicking on the object you want to use as a detection-inhibitor) {In the demo, the orange colour acts as such a preventive measure}, and whenever that object is in front of camera, no gesture detection of any object would be done. :smiley:
 
 
+### Working
+
+For the sake of others, I am sharing a brief gist of the working of the application. :smile:
+
+Still, if anything is not clear enough in code or you want to be explained here, just [contact me](https://github.com/prnvdixit/Vixon/blob/master/README.md#reviews--feature-requests).
+
+I used PyGame for video streaming and other stuff, mostly because of the mouse-control actions and rendering options it provide (plus, I already had previous experience working with it :stuck_out_tongue:). Every left click selects particular portion of the frame and calculates the corresponding HSV colour range for that portion. Similarly, every right click does so for detection-inhibitor object.
+
+For tracking the object, I used OpenCV's ```cv2.inRange``` function. Before that, for cleaning up and reducing the noise in a frame - I used Blurring functions and Morphological transformations. Next, contours were detected and maximum contour out of all was selected as "most probable object".  On each frame, the mid point of the biggest contour was stored to create a trail of motion.
+For detecting direction of movement, I maintained a vector and once it's magnitude exceeds a particular threshold value, direction corresponding to starting point was calculated.
+
 ### Installation requirements
 
 * [Python 2.7.*](https://www.python.org/)
@@ -42,9 +53,10 @@ Some approaches I used earlier but ultimately didn't included them :-
 * I haven't used the area based approach for keyboard typing (the key is assumed to be clicked when your finger is at definite distance from screen) as that restricts you from sitting relaxably and typing. :sweat:
 
 
-### Contributor
+### Developer
 * **Pranav Dixit** - [*GitHub*](https://github.com/prnvdixit) - [*LinkedIn*](https://www.linkedin.com/in/prnvdixit/)
 
 
 ### Reviews / Feature Requests
 I would love to hear from you, contact me via [Telegram](https://telegram.me/prnvdixit) or shoot me a [mail](mailto:prnvdixit@gmail.com).
+
