@@ -3,7 +3,7 @@
 
 Vixon (short for VisCon or Visual Controller) as the name suggests is an automation application to control usual tasks like Typing using a keyboard, Reading / Media / Presentation using Visual actions.
 
-I started working on this over a weekend with the aim of learning about popular algorithms being used in Gesture Detection, Tracking movement of objects, Color detection etc.
+I developed this project with the aim of learning about popular algorithms being used in Image processing for Gesture Detection, Tracking movement of objects, Color detection etc.
 
 
 ### Demo
