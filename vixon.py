@@ -47,6 +47,9 @@ def track():
 
     camera = cv2.VideoCapture(0)
 
+    fourcc = cv2.cv.CV_FOURCC(*'MJPG')
+    video = cv2.VideoWriter('output.avi', fourcc, 30.0, (640, 480))
+
     (grabbed, frame) = camera.read()
 
     ## ** IP-webcam part ** ##
@@ -78,6 +81,7 @@ def track():
         (grabbed, frame) = camera.read()
 
         # print frame.shape
+
 
         ## ** IP-webcam part ** ##
         # url = "http://192.168.43.1:8080/shot.jpg"
@@ -328,13 +332,13 @@ def track():
 
                     key_buffer.append(keyboard_helper.get_key(center))
 
-                    max_occuring = Counter(key_buffer[-10:]).most_common(1)
+                    max_occuring = Counter(key_buffer[-20:]).most_common(1)
                     # print key_buffer, max_occuring
 
-                    if len(key_buffer) > 10:
-                        key_buffer = key_buffer[-10:]
+                    if len(key_buffer) > 20:
+                        key_buffer = key_buffer[-20:]
 
-                    if max_occuring != [] and max_occuring[0][1] > 8 and max_occuring[0][0] is not None:
+                    if max_occuring != [] and max_occuring[0][1] > 15 and max_occuring[0][0] is not None:
                         pyautogui_template.key_press(max_occuring[0][0])
                         pygame.draw.circle(game_display, (0, 0,0), center, 15, 10)
                         key_buffer = []
@@ -389,6 +393,8 @@ def track():
             game_display.blit(screen_text, text_position)
 
         pygame.display.update()
+
+        video.write(frame)
 
         key = cv2.waitKey(1) & 0xFF
 

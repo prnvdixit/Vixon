@@ -6,8 +6,8 @@ def get_key(pos):
 
     pos = np.array(pos) + np.array(constants.window_offset)
 
-    column = (pos[0] - 65) / 44
-    row = (pos[1] - 420) / 27
+    column = (pos[0] - 65) / 42
+    row = (pos[1] - 420) / 28
 
     if column > 14 or row > 3 or column < 0 or row < 0:
         pass
