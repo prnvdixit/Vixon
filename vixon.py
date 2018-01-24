@@ -294,6 +294,7 @@ def track():
             if len(contours) > 0:
                 pts.clear()
                 object_set_to_be_detected = 0
+                direction = ""
             else:
                 if result != []:
                     object_set_to_be_detected = 1

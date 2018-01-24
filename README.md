@@ -10,9 +10,9 @@ I developed this project with the aim of learning about popular algorithms being
 
 For the restless, Just click on the thumbnail to watch it in action :wink:
 
-[![Vixon](https://i.ytimg.com/vi/FO7A14QEAOM/hqdefault.jpg)](http://bit.do/prnvdixit_vixon)
+[![Vixon](https://i.ytimg.com/vi/qj7pAWQ0-kY/hqdefault.jpg)](http://tiny.cc/prnvdixit_vixon)
 
-If the above link is not working for some reason, [Click here](https://youtu.be/FO7A14QEAOM)
+If the above link is not working for some reason, [Click here](https://youtu.be/qj7pAWQ0-kY)
 
 
 ### Advantages
