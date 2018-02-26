@@ -39,7 +39,7 @@ For detecting direction of movement, I maintained a vector and once it's magnitu
 
 * [Python 2.7.*](https://www.python.org/)
 * [OpenCV](https://opencv.org/)
-* [Numpy](www.numpy.org/)
+* [Numpy](https://www.numpy.org/)
 * [PyGame](https://pypi.python.org/pypi/Pygame)
 * [imutils](https://pypi.python.org/pypi/imutils)
 * [PyAutoGUI](https://pypi.python.org/pypi/PyAutoGUI)
